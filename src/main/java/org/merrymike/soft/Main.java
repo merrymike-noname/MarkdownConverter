@@ -5,14 +5,22 @@ import java.util.regex.Pattern;
 
 public class Main {
     public static void main(String[] args) {
-        String input = "This_is _italic_ text. _This_ is _more_italic_ text.";
-        Pattern pattern = Pattern.compile("\\b_(.*?)_\\b");
+        String input = "This is _italic_ text. `This` is **bold** and `_monospaced_` text. _**Test text**_";
+        Pattern pattern = Pattern.compile("`(.*?)`|\\*\\*(.*?)\\*\\*|\\b_(.*?)_\\b");
         Matcher matcher = pattern.matcher(input);
 
-        StringBuffer replacedString = new StringBuffer();
+        StringBuilder replacedString = new StringBuilder();
         while (matcher.find()) {
-            String italicText = matcher.group(1);
-            matcher.appendReplacement(replacedString, "<i>" + italicText + "</i>");
+            if (matcher.group(1) != null) {
+                String monospacedText = matcher.group(1);
+                matcher.appendReplacement(replacedString, "<tt>" + monospacedText + "</tt>");
+            } else if (matcher.group(2) != null) {
+                String boldText = matcher.group(2);
+                matcher.appendReplacement(replacedString, "<b>" + boldText + "</b>");
+            } else if (matcher.group(3) != null) {
+                String italicText = matcher.group(3);
+                matcher.appendReplacement(replacedString, "<i>" + italicText + "</i>");
+            }
         }
         matcher.appendTail(replacedString);
 
