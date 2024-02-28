@@ -1,0 +1,11 @@
+<component name="CopyrightManager">
+  <settings default="Copyright">
+    <module2copyright>
+      <element module="All" copyright="Copyright" />
+    </module2copyright>
+    <LanguageOptions name="JAVA">
+      <option name="fileTypeOverride" value="3" />
+      <option name="addBlankBefore" value="true" />
+    </LanguageOptions>
+  </settings>
+</component>
