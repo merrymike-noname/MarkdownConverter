@@ -5,25 +5,71 @@ import java.util.regex.Pattern;
 
 public class Main {
     public static void main(String[] args) {
-        String input = "This is _italic_ text. `This` is **bold** and `_monospaced_` text. _**Test text**_";
-        Pattern pattern = Pattern.compile("`(.*?)`|\\*\\*(.*?)\\*\\*|\\b_(.*?)_\\b");
-        Matcher matcher = pattern.matcher(input);
+        String markdownText = """
+               **_bold_**
+               _italic_
+               _italic2_
+               `monospaced`
+               _txt
+               ```
+               Preformatted text
+               ```
 
-        StringBuilder replacedString = new StringBuilder();
+               Paragraph1. Lorem Ipsum Dolor Sit Amet.
+               This is still paragraph 1.
+
+               And after a blank line this is paragraph 2.""";
+
+        String htmlText = convertMarkdownToHTML(markdownText);
+        System.out.println(htmlText);
+    }
+
+    public static String convertMarkdownToHTML(String markdownText) {
+        StringBuilder result = new StringBuilder();
+        Pattern pattern = Pattern.compile("```([\\s\\S]*?)```|`([^`]+)`|\\*\\*(.*?)\\*\\*|_(.*?)_",
+                Pattern.MULTILINE);
+        Matcher matcher = pattern.matcher(markdownText);
+
+        int lastEnd = 0;
         while (matcher.find()) {
+            // Append the text before the match
+            result.append(markdownText, lastEnd, matcher.start());
+
+            // Process each match
             if (matcher.group(1) != null) {
-                String monospacedText = matcher.group(1);
-                matcher.appendReplacement(replacedString, "<tt>" + monospacedText + "</tt>");
+                nestedFormattingCheck(pattern, matcher.group(1));
+                result.append("<pre>").append(matcher.group(1)).append("</pre>");
+
             } else if (matcher.group(2) != null) {
-                String boldText = matcher.group(2);
-                matcher.appendReplacement(replacedString, "<b>" + boldText + "</b>");
+
+                nestedFormattingCheck(pattern, matcher.group(2));
+                result.append("<tt>").append(matcher.group(2)).append("</tt>");
+
             } else if (matcher.group(3) != null) {
-                String italicText = matcher.group(3);
-                matcher.appendReplacement(replacedString, "<i>" + italicText + "</i>");
+                nestedFormattingCheck(pattern, matcher.group(3));
+                result.append("<b>").append(matcher.group(3)).append("</b>");
+            } else if (matcher.group(4) != null) {
+
+                nestedFormattingCheck(pattern, matcher.group(4));
+                result.append("<i>").append(matcher.group(4)).append("</i>");
+            }
+
+            lastEnd = matcher.end();
+        }
+
+        // Append any remaining text after the last match
+        result.append(markdownText.substring(lastEnd));
+
+        return result.toString();
+    }
+
+    private static void nestedFormattingCheck(Pattern pattern, String group) {
+        if (group != null) {
+            Matcher nestedMatcher;
+            nestedMatcher = pattern.matcher(group);
+            if (nestedMatcher.find()) {
+                throw new IllegalArgumentException("File is incorrect. Nested formatting found in: " + group);
             }
         }
-        matcher.appendTail(replacedString);
-
-        System.out.println(replacedString);
     }
 }
