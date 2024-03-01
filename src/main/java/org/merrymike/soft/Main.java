@@ -7,26 +7,29 @@ import java.util.regex.Pattern;
 public class Main {
     public static void main(String[] args) {
         String markdownText = """
-               **bold**
-               _italic_
+               **bold** _ erw
+               _italic _
                _italic2_
                `monospaced`
-               _txt
+               _ txt tre
+               ** wew wew
+               
                ```
                Preformatted text
                ```
 
-               Paragraph1. Lorem Ipsum Dolor Sit Amet.
-               This is still paragraph 1.
+               Paragraph1. Lorem_Ipsum_Dolor Sit Amet.
+               This**is**still _paragraph_ 1.
 
-               And after a blank line this is paragraph 2.""";
+               And after a blank `line` this is paragraph 2.""";
         String htmlText = convertMarkdownToHTML(markdownText);
+        unclosedFormattingCheck(markdownText);
         System.out.println(htmlText);
     }
 
     public static String convertMarkdownToHTML(String markdownText) {
         StringBuilder result = new StringBuilder();
-        Pattern pattern = Pattern.compile("```([\\s\\S]*?)```|`([^`]+)`|\\*\\*(.*?)\\*\\*|_(.*?)_",
+        Pattern pattern = Pattern.compile("```([\\s\\S]*?)```|`([^`]+)`|\\*\\*(.*?)\\*\\*|\\b_(.*?)_\\b",
                 Pattern.MULTILINE);
         Matcher matcher = pattern.matcher(markdownText);
 
@@ -65,6 +68,19 @@ public class Main {
             nestedMatcher = pattern.matcher(group);
             if (nestedMatcher.find()) {
                 throw new IllegalArgumentException("File is incorrect. Nested formatting found in: " + group);
+            }
+        }
+    }
+
+    private static void unclosedFormattingCheck(String textToCheck) {
+        Pattern pattern = Pattern.compile("(^|\\W|\\s)_\\S([^_]+)$|(^|\\W|\\s)\\*\\*\\S([^\\*\\*]+)$|(^|\\W|\\s)`\\S([^`]+)$");
+        Matcher matcher;
+        for (String line : textToCheck.split("\n")) {
+            matcher = pattern.matcher(line);
+            while (matcher.find()) {
+                if (matcher.group() != null) {
+                    throw new IllegalArgumentException("Unclosed formatting found in: " + matcher.group());
+                }
             }
         }
     }
