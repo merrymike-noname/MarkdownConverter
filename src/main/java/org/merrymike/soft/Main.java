@@ -1,5 +1,6 @@
 package org.merrymike.soft;
 
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,7 +20,6 @@ public class Main {
                This is still paragraph 1.
 
                And after a blank line this is paragraph 2.""";
-
         String htmlText = convertMarkdownToHTML(markdownText);
         System.out.println(htmlText);
     }
@@ -30,40 +30,36 @@ public class Main {
                 Pattern.MULTILINE);
         Matcher matcher = pattern.matcher(markdownText);
 
+        Map<Integer, String> replacementRegexpMap = Map.of(
+                1, "<pre>$1</pre>",
+                2, "<tt>$1</tt>",
+                3, "<b>$1</b>",
+                4, "<i>$1</i>"
+        );
+
         int lastEnd = 0;
+
         while (matcher.find()) {
-            // Append the text before the match
             result.append(markdownText, lastEnd, matcher.start());
 
-            // Process each match
-            if (matcher.group(1) != null) {
-                nestedFormattingCheck(pattern, matcher.group(1));
-                result.append("<pre>").append(matcher.group(1)).append("</pre>");
-
-            } else if (matcher.group(2) != null) {
-
-                nestedFormattingCheck(pattern, matcher.group(2));
-                result.append("<tt>").append(matcher.group(2)).append("</tt>");
-
-            } else if (matcher.group(3) != null) {
-                nestedFormattingCheck(pattern, matcher.group(3));
-                result.append("<b>").append(matcher.group(3)).append("</b>");
-            } else if (matcher.group(4) != null) {
-
-                nestedFormattingCheck(pattern, matcher.group(4));
-                result.append("<i>").append(matcher.group(4)).append("</i>");
+            for (Map.Entry<Integer, String> entry : replacementRegexpMap.entrySet()) {
+                if (matcher.group(entry.getKey()) != null) {
+                    nestedFormattingCheck(matcher.group(entry.getKey()));
+                    result.append(entry.getValue().replace("$1", matcher.group(entry.getKey())));
+                    break;
+                }
             }
-
             lastEnd = matcher.end();
         }
 
-        // Append any remaining text after the last match
-        result.append(markdownText.substring(lastEnd));
+        result.append(markdownText, lastEnd, markdownText.length());
 
         return splitByParagraphs(result.toString());
     }
 
-    private static void nestedFormattingCheck(Pattern pattern, String group) {
+    private static void nestedFormattingCheck(String group) {
+        Pattern pattern = Pattern.compile("```([\\s\\S]*?)```|`([^`]+)`|\\*\\*(.*?)\\*\\*|_(.*?)_",
+                Pattern.MULTILINE);
         if (group != null) {
             Matcher nestedMatcher;
             nestedMatcher = pattern.matcher(group);
