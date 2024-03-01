@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 public class Main {
     public static void main(String[] args) {
         String markdownText = """
-               **_bold_**
+               **bold**
                _italic_
                _italic2_
                `monospaced`
@@ -60,7 +60,7 @@ public class Main {
         // Append any remaining text after the last match
         result.append(markdownText.substring(lastEnd));
 
-        return result.toString();
+        return splitByParagraphs(result.toString());
     }
 
     private static void nestedFormattingCheck(Pattern pattern, String group) {
@@ -71,5 +71,13 @@ public class Main {
                 throw new IllegalArgumentException("File is incorrect. Nested formatting found in: " + group);
             }
         }
+    }
+
+    private static String splitByParagraphs(String text) {
+        StringBuilder parsedText = new StringBuilder();
+        for (String paragraph : text.split("\n\n")) {
+            parsedText.append("<p>").append(paragraph).append("</p>\n");
+        }
+        return parsedText.toString();
     }
 }
