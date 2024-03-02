@@ -63,7 +63,7 @@ public class MarkdownToHtmlConverter {
     }
 
     private void unclosedFormattingCheck(String textToCheck) {
-        Pattern pattern = Pattern.compile("(^|\\W|\\s)_\\S([^_\b]+)$|(^|\\W|\\s)\\*\\*\\S([^\\*\\*]+)$|(^|\\W|\\s)`\\S([^`]+)$");
+        Pattern pattern = Pattern.compile("(^|\\W|\\s)_\\S([^_\\W]+)$|(^|\\W|\\s)\\*\\*\\S([^\\*\\*\\W]+)$|(^|\\W|\\s)`\\S([^`\\W]+)$");
         Matcher matcher;
         for (String line : textToCheck.split("\n")) {
             matcher = pattern.matcher(line);
