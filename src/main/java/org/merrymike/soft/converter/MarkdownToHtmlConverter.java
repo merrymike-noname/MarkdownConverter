@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 
 public class MarkdownToHtmlConverter {
     public String convertMarkdownToHTML(String markdownText) {
+        // this is a redundant comment that will be reverted
         unclosedFormattingCheck(markdownText);
         StringBuilder result = new StringBuilder();
         Pattern pattern = Pattern.compile("```([\\s\\S]*?)```|`([^`]+)`|\\*\\*(.*?)\\*\\*|\\b_(\\S*?)_\\b",
