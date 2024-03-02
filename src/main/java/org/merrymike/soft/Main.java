@@ -11,25 +11,25 @@ public class Main {
                _italic _
                _italic2_
                `monospaced`
-               _ txt tre
+               _txt t_re
                ** wew wew
                
                ```
-               Preformatted text
+               Preformatted _text_
                ```
 
                Paragraph1. Lorem_Ipsum_Dolor Sit Amet.
                This**is**still _paragraph_ 1.
 
                And after a blank `line` this is paragraph 2.""";
-        String htmlText = convertMarkdownToHTML(markdownText);
         unclosedFormattingCheck(markdownText);
+        String htmlText = convertMarkdownToHTML(markdownText);
         System.out.println(htmlText);
     }
 
     public static String convertMarkdownToHTML(String markdownText) {
         StringBuilder result = new StringBuilder();
-        Pattern pattern = Pattern.compile("```([\\s\\S]*?)```|`([^`]+)`|\\*\\*(.*?)\\*\\*|\\b_(.*?)_\\b",
+        Pattern pattern = Pattern.compile("```([\\s\\S]*?)```|`([^`]+)`|\\*\\*(.*?)\\*\\*|\\b_(\\S*?)_\\b",
                 Pattern.MULTILINE);
         Matcher matcher = pattern.matcher(markdownText);
 
@@ -47,7 +47,9 @@ public class Main {
 
             for (Map.Entry<Integer, String> entry : replacementRegexpMap.entrySet()) {
                 if (matcher.group(entry.getKey()) != null) {
-                    nestedFormattingCheck(matcher.group(entry.getKey()));
+                    if (entry.getKey() > 1) {
+                        nestedFormattingCheck(matcher.group(entry.getKey()));
+                    }
                     result.append(entry.getValue().replace("$1", matcher.group(entry.getKey())));
                     break;
                 }
@@ -61,7 +63,7 @@ public class Main {
     }
 
     private static void nestedFormattingCheck(String group) {
-        Pattern pattern = Pattern.compile("```([\\s\\S]*?)```|`([^`]+)`|\\*\\*(.*?)\\*\\*|_(.*?)_",
+        Pattern pattern = Pattern.compile("```([\\s\\S]*?)```|`([^`]+)`|\\*\\*(.*?)\\*\\*|_(\\S*?)_",
                 Pattern.MULTILINE);
         if (group != null) {
             Matcher nestedMatcher;
@@ -73,7 +75,7 @@ public class Main {
     }
 
     private static void unclosedFormattingCheck(String textToCheck) {
-        Pattern pattern = Pattern.compile("(^|\\W|\\s)_\\S([^_]+)$|(^|\\W|\\s)\\*\\*\\S([^\\*\\*]+)$|(^|\\W|\\s)`\\S([^`]+)$");
+        Pattern pattern = Pattern.compile("(^|\\W|\\s)_\\S([^_\b]+)$|(^|\\W|\\s)\\*\\*\\S([^\\*\\*]+)$|(^|\\W|\\s)`\\S([^`]+)$");
         Matcher matcher;
         for (String line : textToCheck.split("\n")) {
             matcher = pattern.matcher(line);
