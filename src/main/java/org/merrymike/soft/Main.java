@@ -6,6 +6,7 @@
 
 package org.merrymike.soft;
 
+import org.merrymike.soft.converter.MarkdownToAnsiConverter;
 import org.merrymike.soft.converter.MarkdownToHtmlConverter;
 
 import java.io.*;
@@ -18,8 +19,8 @@ public class Main {
         }
 
         String markdownText = readMarkdownText(args[0]);
-        MarkdownToHtmlConverter converter = new MarkdownToHtmlConverter();
-        String htmlText = converter.convertMarkdownToHTML(markdownText);
+        MarkdownToAnsiConverter converter = new MarkdownToAnsiConverter();
+        String htmlText = converter.convertMarkdownToANSI(markdownText);
 
         if (args.length >= 3 && args[1].equals("--out")) {
             writeOutput(args[2], htmlText);
