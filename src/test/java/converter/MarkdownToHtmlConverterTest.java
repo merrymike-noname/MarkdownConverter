@@ -91,17 +91,9 @@ public class MarkdownToHtmlConverterTest {
 
     @Test
     void standaloneFormatOpeningsAreTreatedRight() {
-        String standaloneUnderscore = "_";
-        String expectedHtmlUnderscore = "<p>_</p>";
-        String actualHtmlUnderscore = htmlConverter.convert(standaloneUnderscore);
-        assertEquals(expectedHtmlUnderscore, actualHtmlUnderscore.trim());
-        String standaloneDoubleStar = "**";
-        String expectedHtmlDoubleStar = "<p>**</p>";
-        String actualHtmlDoubleStar = htmlConverter.convert(standaloneDoubleStar);
-        assertEquals(expectedHtmlDoubleStar, actualHtmlDoubleStar.trim());
-        String standaloneBacktick = "`";
-        String expectedHtmlBacktick = "<p>`</p>";
-        String actualHtmlBacktick = htmlConverter.convert(standaloneBacktick);
-        assertEquals(expectedHtmlBacktick, actualHtmlBacktick.trim());
+        String markdownText = "text ** bold text ** text _ italic text _ text ` monospaced text `";
+        String expectedHtml = "<p>text ** bold text ** text _ italic text _ text <tt> monospaced text </tt></p>";
+        String actualHtml = htmlConverter.convert(markdownText);
+        assertEquals(expectedHtml, actualHtml.trim());
     }
 }
