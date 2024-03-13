@@ -13,6 +13,7 @@ import org.merrymike.soft.converter.MarkdownToHtmlConverter;
 import java.io.*;
 
 public class Main {
+    // GH Actions CI test push
     public static void main(String[] args) {
         if (args.length < 1) {
             System.out.println("Usage: java -jar MarkdownToHtmlConverter.jar <input_file> [--out <output_file>]");
