@@ -89,7 +89,7 @@ public class MarkdownToAnsiConverterTest {
     @Test
     void standaloneFormatOpeningsAreTreatedRight() {
         String markdownText = "text ** bold text ** text _ italic text _ text ` monospaced text `";
-        String expectedAnsi = "incorrect";
+        String expectedAnsi = "text ** bold text ** text _ italic text _ text \u001B[7m monospaced text \u001B[27m";
         String actualAnsi = ansiConverter.convert(markdownText);
         assertEquals(expectedAnsi, actualAnsi);
     }
