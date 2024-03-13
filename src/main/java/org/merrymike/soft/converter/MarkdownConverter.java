@@ -19,7 +19,6 @@ public abstract class MarkdownConverter implements Converter {
 
     @Override
     public String convert(String markdownText) {
-        unclosedFormattingCheck(markdownText);
         StringBuilder result = new StringBuilder();
         Pattern pattern = Pattern.compile("```([\\s\\S]*?)```|`([^`]+)`|\\*\\*(.*?)\\*\\*|(?<=^|\\s)_(.+?)_(?=\\s|$)",
                 Pattern.MULTILINE);
@@ -40,6 +39,7 @@ public abstract class MarkdownConverter implements Converter {
             lastEnd = matcher.end();
         }
         result.append(markdownText, lastEnd, markdownText.length());
+        unclosedFormattingCheck(markdownText);
         return splitByParagraphs(result.toString());
     }
 
