@@ -21,7 +21,7 @@ public abstract class MarkdownConverter implements Converter {
     public String convert(String markdownText) {
         unclosedFormattingCheck(markdownText);
         StringBuilder result = new StringBuilder();
-        Pattern pattern = Pattern.compile("```([\\s\\S]*?)```|`([^`]+)`|\\*\\*(.*?)\\*\\*|(^|\\s)_(.+?)_($|\\s)",
+        Pattern pattern = Pattern.compile("```([\\s\\S]*?)```|`([^`]+)`|\\*\\*(.*?)\\*\\*|(?<=^|\\s)_(.+?)_(?=\\s|$)",
                 Pattern.MULTILINE);
         Matcher matcher = pattern.matcher(markdownText);
         Map<Integer, String> replacementRegexpMap = buildReplacementMap();

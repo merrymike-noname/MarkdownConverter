@@ -15,7 +15,7 @@ public class MarkdownToAnsiConverter extends MarkdownConverter {
                 1, "\u001B[7m$1\u001B[27m",
                 2, "\u001B[7m$1\u001B[27m",
                 3, "\u001B[1m$1\u001B[22m",
-                5, "\u001B[3m$1\u001B[23m");
+                4, "\u001B[3m$1\u001B[23m");
     }
 
     @Override

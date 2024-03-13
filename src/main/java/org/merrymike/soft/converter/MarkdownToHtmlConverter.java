@@ -15,7 +15,7 @@ public class MarkdownToHtmlConverter extends MarkdownConverter {
                 1, "<pre>$1</pre>",
                 2, "<tt>$1</tt>",
                 3, "<b>$1</b>",
-                5, "<i>$1</i>");
+                4, "<i>$1</i>");
     }
 
     @Override
